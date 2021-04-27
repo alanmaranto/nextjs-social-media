@@ -40,7 +40,7 @@ const ImageDropDiv = ({
             }}
           >
             {mediaPreview === null ? (
-              <Segment color={highlighted ? "green" : ""} placeholder basic>
+              <Segment color={highlighted ? "green" : null} placeholder basic>
                 <Header icon>
                   <Icon
                     name="file image outline"
