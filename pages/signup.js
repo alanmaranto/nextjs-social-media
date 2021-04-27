@@ -1,13 +1,151 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import {
+  Form,
+  Button,
+  Message,
+  TextArea,
+  Divider,
+  Segment,
+} from "semantic-ui-react";
+import CommonInputs from "../components/Shared/CommonInputs";
 import {
   HeaderMessage,
   FooterMessage,
 } from "../components/Shared/WelcomeMessage";
+import { regexUserName } from "../utils/authUser";
 
 const SignUp = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showSocialLinks, setShowSocialLinks] = useState(false);
+  const [error, setError] = useState(null);
+  const [username, setUsername] = useState("");
+  const [usernameLoading, setUsernameLoading] = useState(false);
+  const [usernameAvailable, setUsernameAvailable] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    bio: "",
+    facebook: "",
+    youtube: "",
+    twitter: "",
+    instagram: "",
+  });
+
+  const { name, email, password, bio } = user;
+
+  const handleSubmit = (e) => {};
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    const isNotEmptyUser = Object.values({ name, email, password, bio }).every((item) =>
+      Boolean(item)
+    );
+    isNotEmptyUser ? setSubmitDisabled(false) : setSubmitDisabled(true);
+  }, [user]);
+
   return (
     <>
       <HeaderMessage />
+      <Form
+        loading={formLoading}
+        error={error !== null}
+        onSubmit={handleSubmit}
+      >
+        <Message
+          error
+          header="Oops!"
+          content={error}
+          onDismiss={() => setError(null)}
+        />
+        <Segment>
+          <Form.Input
+            required
+            label="Name"
+            placeholder="Name"
+            name="name"
+            value={name}
+            onChange={handleChange}
+            fluid
+            icon="user"
+            action
+            iconPosition="left"
+          />
+          <Form.Input
+            required
+            label="Email"
+            placeholder="Email"
+            name="email"
+            value={email}
+            onChange={handleChange}
+            fluid
+            icon="envelope"
+            action
+            iconPosition="left"
+            type="email"
+          />
+          <Form.Input
+            required
+            label="password"
+            placeholder="Password"
+            name="password"
+            value={password}
+            onChange={handleChange}
+            fluid
+            icon={{
+              name: "eye",
+              circular: true,
+              link: true,
+              onClick: () => setShowPassword(!showPassword),
+            }}
+            action
+            iconPosition="left"
+            type={showPassword ? "text" : "password"}
+          />
+          <Form.Input
+            loading={usernameLoading}
+            error={!usernameAvailable}
+            required
+            label="Username"
+            placeholder="Username"
+            name="username"
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              if (regexUserName.test(e.target.value)) {
+                setUsernameAvailable(true);
+              } else {
+                setUsernameAvailable(false);
+              }
+            }}
+            fluid
+            icon={usernameAvailable ? "check" : "close"}
+            iconPosition="left"
+          />
+          <CommonInputs
+            user={user}
+            showSocialLinks={showSocialLinks}
+            setShowSocialLinks={setShowSocialLinks}
+            handleChange={handleChange}
+          />
+          <Divider hidden />
+          <Button
+            content="Signup"
+            type="submit"
+            color="orange"
+            disabled={submitDisabled || !usernameAvailable}
+          />
+        </Segment>
+      </Form>
       <FooterMessage />
     </>
   );
