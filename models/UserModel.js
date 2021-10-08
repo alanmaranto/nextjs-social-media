@@ -36,7 +36,7 @@ const UserSchema = new Schema(
     },
     unreadNotification: {
       type: Boolean,
-      default: "user",
+      default: false,
     },
     role: {
       type: String,

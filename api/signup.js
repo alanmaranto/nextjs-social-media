@@ -28,12 +28,23 @@ router.get("/:username", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, email, password, bio, facebook, youtube, twitter, instagram } =
-    req.body.user;
+  const {
+    name,
+    email,
+    username,
+    password,
+    bio,
+    facebook,
+    youtube,
+    twitter,
+    instagram,
+  } = req.body.user;
 
   if (!isEmail(email)) return res.status(401).send("Invalid email");
+
   if (password.length < 6)
     return res.status(401).send("Password must be at least 6 characters");
+
   try {
     let user;
     user = await UserModel.findOne({ email: email.toLowerCase() });
@@ -48,8 +59,8 @@ router.post("/", async (req, res) => {
       profilePicUrl: req.body.profilePicUrl || userImg,
     });
 
-    // user.password = await bcrypt.hash(password, 10)
     await user.save();
+
     let profileFields = {};
     profileFields.user = user._id;
     profileFields.bio = bio;
@@ -68,17 +79,24 @@ router.post("/", async (req, res) => {
     }).save();
 
     const payload = {
-        userId: user._id,
-    }
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "2d"}, (err, token) => {
+      userId: user._id,
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "2d" },
+      (err, token) => {
         if (err) {
-            throw err
+          throw err;
         }
-        res.status(200).json(token)
-    } )
-
-
-  } catch (error) {}
+        res.status(200).json(token);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Server error");
+  }
 });
 
 module.exports = router;

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Message, Divider, Segment } from "semantic-ui-react";
-import baseUrl from "../utils/baseUrl";
-import axios from "axios";
 
 import {
   HeaderMessage,
   FooterMessage,
 } from "../components/Shared/WelcomeMessage";
 import { isNotEmptyObject } from "../utils/validations";
+import { loginUser } from "../utils/authUser";
 
 const Login = () => {
   const [error, setError] = useState(null);
@@ -35,7 +34,10 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await loginUser(user, setError, setFormLoading);
+  };
 
   return (
     <>

@@ -73,7 +73,7 @@ const SignUp = () => {
         }),
       });
 
-      if (errorMsg !== null) setError(null);
+      if (error !== null) setError(null);
 
       if (res.data === "Available") {
         setUsernameAvailable(true);
@@ -91,9 +91,11 @@ const SignUp = () => {
     setFormLoading(true);
 
     let profilePicUrl;
+
     if (media !== null) {
       profilePicUrl = await uploadPic(media);
     }
+
     if (media !== null && !profilePicUrl) {
       setFormLoading(false);
       return setError("Error Uploading Image");
