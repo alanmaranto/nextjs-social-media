@@ -6,13 +6,12 @@ const UserModel = require("../models/UserModel");
 const ProfileModel = require("../models/ProfileModel");
 const FollowerModel = require("../models/FollowerModel");
 const isEmail = require("validator/lib/isEmail");
-const { regexUserName } = require("../utils/authUser");
+const { regexUserName } = require("../helpers");
 const userImg =
   "https://res.cloudinary.com/indersingh/image/upload/v1593464618/App/user_mklcpl.png";
 
 router.get("/:username", async (req, res) => {
   const { username } = req.params;
-
   try {
     if (username.length < 1) return res.status(401).send("Invalid");
     if (!regexUserName.test(username))

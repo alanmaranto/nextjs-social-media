@@ -7,8 +7,14 @@ import {
 } from "../components/Shared/WelcomeMessage";
 import ImageDropDiv from "../components/Shared/ImageDropDiv";
 import PdfDropDiv from "../components/Shared/PdfDropDiv";
-import { regexUserName } from "../utils/authUser";
+import { regexUserName } from "../helpers";
 import { isNotEmptyObject } from "../utils/validations";
+import axios from "axios";
+import baseUrl from "../utils/baseUrl";
+import { registerUser } from "../utils/authUser";
+import uploadPic from "../utils/uploadPicToCloudinary";
+
+let cancel;
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,8 +44,6 @@ const SignUp = () => {
 
   const { name, email, password, bio } = user;
 
-  const handleSubmit = (e) => {};
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prev) => ({
@@ -56,11 +60,57 @@ const SignUp = () => {
     setMediaPreview(URL.createObjectURL(files[0]));
   };
 
+  const checkUsername = async () => {
+    setUsernameLoading(true);
+    try {
+      cancel && cancel();
+
+      const CancelToken = axios.CancelToken;
+
+      const res = await axios.get(`${baseUrl}/api/signup/${username}`, {
+        cancelToken: new CancelToken((canceled) => {
+          cancel = canceled;
+        }),
+      });
+
+      if (errorMsg !== null) setError(null);
+
+      if (res.data === "Available") {
+        setUsernameAvailable(true);
+        setUser((prev) => ({ ...prev, username }));
+      }
+    } catch (error) {
+      setError("Username Not Available");
+      setUsernameAvailable(false);
+    }
+    setUsernameLoading(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormLoading(true);
+
+    let profilePicUrl;
+    if (media !== null) {
+      profilePicUrl = await uploadPic(media);
+    }
+    if (media !== null && !profilePicUrl) {
+      setFormLoading(false);
+      return setError("Error Uploading Image");
+    }
+
+    await registerUser(user, profilePicUrl, setError, setFormLoading);
+  };
+
   useEffect(() => {
     isNotEmptyObject({ name, email, password, bio })
       ? setSubmitDisabled(false)
       : setSubmitDisabled(true);
   }, [user]);
+
+  useEffect(() => {
+    username === "" ? setUsernameAvailable(false) : checkUsername();
+  }, [username]);
 
   return (
     <>

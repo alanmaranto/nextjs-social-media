@@ -1,4 +1,4 @@
-const catchErrors = (error, displayError) => {
+const catchErrors = (error) => {
   let errorMsg = {};
 
   if (error.response) {
@@ -18,7 +18,7 @@ const catchErrors = (error, displayError) => {
 
     console.error(errorMsg);
   }
-  displayError(errorMsg);
+  return errorMsg;
 };
 
 export default catchErrors;
