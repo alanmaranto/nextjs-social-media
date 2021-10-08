@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Container, Divider, Icon } from "semantic-ui-react";
-
+// The states needs to pass as a props
 export default function Home() {
   const [media, setMedia] = useState(null);
   const [extension, setExtension] = useState("");
@@ -12,6 +12,7 @@ export default function Home() {
         accept=".pdf, .csv"
         onChange={(e) => {
           const { files } = e.target;
+          if (files.length === 0) return;
 
           const fileAdded = files[0];
           setMedia(fileAdded);

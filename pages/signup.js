@@ -6,6 +6,7 @@ import {
   FooterMessage,
 } from "../components/Shared/WelcomeMessage";
 import ImageDropDiv from "../components/Shared/ImageDropDiv";
+import PdfDropDiv from "../components/Shared/PdfDropDiv";
 import { regexUserName } from "../utils/authUser";
 import { isNotEmptyObject } from "../utils/validations";
 
@@ -86,6 +87,7 @@ const SignUp = () => {
             setHighlighted={setHighlighted}
             handleFiles={handleFiles}
           />
+          {/* <PdfDropDiv /> */}
           <Form.Input
             required
             label="Name"
