@@ -49,6 +49,8 @@ const SignUp = () => {
 
   const handleFiles = (e) => {
     const { files } = e.target;
+    if (files.length === 0) return;
+
     setMedia(files[0]);
     setMediaPreview(URL.createObjectURL(files[0]));
   };

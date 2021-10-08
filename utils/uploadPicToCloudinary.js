@@ -8,7 +8,9 @@ const uploadPic = async (media) => {
     form.append("cloud_name", "alanmaranto");
     const response = await axios.post(process.env.CLOUDINARY_URL, form);
     return response.data.url;
-  } catch (error) {}
+  } catch (error) {
+    return;
+  }
 };
 
 export default uploadPic;
